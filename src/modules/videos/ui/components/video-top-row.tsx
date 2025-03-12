@@ -14,11 +14,15 @@ interface VideoTopRowProps {
 
 export const VideoTopRow = ({ video }: VideoTopRowProps) => {
   const compactViews = useMemo(() => {
-    return Intl.NumberFormat("en", { notation: "compact" }).format(13867);
-  }, []);
+    return Intl.NumberFormat("en", { notation: "compact" }).format(
+      video.viewCount,
+    );
+  }, [video.viewCount]);
   const expandedViews = useMemo(() => {
-    return Intl.NumberFormat("en", { notation: "standard" }).format(13867);
-  }, []);
+    return Intl.NumberFormat("en", { notation: "standard" }).format(
+      video.viewCount,
+    );
+  }, [video.viewCount]);
 
   const compactDate = useMemo(() => {
     return formatDistanceToNow(video.createdAt, { addSuffix: true });
