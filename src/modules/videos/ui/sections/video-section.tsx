@@ -6,9 +6,15 @@ import { useAuth } from "@clerk/nextjs";
 
 import { trpc } from "@/trpc/client";
 import { cn } from "@/lib/utils";
-import { VideoPlayer } from "@/modules/videos/ui/components/video-player";
+import {
+  VideoPlayer,
+  VideoPlayerSkeleton,
+} from "@/modules/videos/ui/components/video-player";
 import { VideoBanner } from "@/modules/videos/ui/components/video-banner";
-import { VideoTopRow } from "@/modules/videos/ui/components/video-top-row";
+import {
+  VideoTopRow,
+  VideoTopRowSkeleton,
+} from "@/modules/videos/ui/components/video-top-row";
 
 interface VideoSectionProps {
   videoId: string;
@@ -16,7 +22,7 @@ interface VideoSectionProps {
 
 export const VideoSection = ({ videoId }: VideoSectionProps) => {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<VideoSectionSkeleton />}>
       <ErrorBoundary fallback={<p>Error</p>}>
         <VideoSectionSuspense videoId={videoId} />
       </ErrorBoundary>
@@ -58,6 +64,15 @@ const VideoSectionSuspense = ({ videoId }: VideoSectionProps) => {
       </div>
       <VideoBanner status={video.muxStatus} />
       <VideoTopRow video={video} />
+    </>
+  );
+};
+
+const VideoSectionSkeleton = () => {
+  return (
+    <>
+      <VideoPlayerSkeleton />
+      <VideoTopRowSkeleton />
     </>
   );
 };
