@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { and, count, desc, eq, getTableColumns, lt, or } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 import { db } from "@/db";
 import {
@@ -27,6 +28,27 @@ export const commentsRouter = createTRPCRouter({
         .returning();
 
       return createdComment;
+    }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { id } = input;
+
+      const [deleteComment] = await db
+        .delete(comments)
+        .where(and(eq(comments.id, id), eq(comments.userId, userId)))
+        .returning();
+
+      if (!deleteComment) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return deleteComment;
     }),
   getMany: baseProcedure
     .input(
