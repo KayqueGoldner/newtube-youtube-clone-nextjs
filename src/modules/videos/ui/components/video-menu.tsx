@@ -20,7 +20,11 @@ interface VideoMenuProps {
   onRemove?: () => void;
 }
 
-export const VideoMenu = ({ videoId, onRemove, variant }: VideoMenuProps) => {
+export const VideoMenu = ({
+  videoId,
+  onRemove,
+  variant = "ghost",
+}: VideoMenuProps) => {
   const onShare = () => {
     const fullUrl = `${process.env.VERCEL_URL || "http://localhost:3000"}/videos/${videoId}`;
     navigator.clipboard.writeText(fullUrl);
