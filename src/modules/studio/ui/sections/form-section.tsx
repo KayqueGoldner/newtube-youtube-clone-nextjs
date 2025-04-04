@@ -102,6 +102,17 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     },
   });
 
+  const revalidate = trpc.videos.revalidate.useMutation({
+    onSuccess: () => {
+      utils.studio.getMany.invalidate();
+      utils.studio.getOne.invalidate({ id: videoId });
+      toast.success("Video revalidated");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
     onSuccess: () => {
       utils.studio.getMany.invalidate();
@@ -198,6 +209,14 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                     <TrashIcon className="mr-2 size-4" />
                     Delete
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      revalidate.mutate({ id: videoId });
+                    }}
+                  >
+                    <RotateCcwIcon className="mr-2 size-4" />
+                    Revalidate
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -286,7 +305,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
               <FormField
                 control={form.control}
                 name="thumbnailUrl"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Thumbnail</FormLabel>
                     <FormControl>
