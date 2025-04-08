@@ -1,5 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
 import { trpc } from "@/trpc/client";
 import { DEFAULT_LIMIT } from "@/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -19,6 +22,19 @@ interface ResultsSectionProps {
 }
 
 export const ResultsSection = ({ categoryId, query }: ResultsSectionProps) => {
+  return (
+    <Suspense
+      key={`${query}-${categoryId}`}
+      fallback={<ResultsSectionSkeleton />}
+    >
+      <ErrorBoundary fallback={<p>Error</p>}>
+        <ResultsSectionSuspense categoryId={categoryId} query={query} />
+      </ErrorBoundary>
+    </Suspense>
+  );
+};
+
+const ResultsSectionSuspense = ({ categoryId, query }: ResultsSectionProps) => {
   const isMobile = useIsMobile();
 
   const [results, resultsQuery] = trpc.search.getMany.useSuspenseInfiniteQuery(
@@ -58,5 +74,22 @@ export const ResultsSection = ({ categoryId, query }: ResultsSectionProps) => {
         isManual={false}
       />
     </>
+  );
+};
+
+const ResultsSectionSkeleton = () => {
+  return (
+    <div>
+      <div className="hidden flex-col gap-4 md:flex">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <VideoRowCardSkeleton key={index} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-4 gap-y-10 p-4 pt-6 md:hidden">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <VideoGridCardSkeleton key={index} />
+        ))}
+      </div>
+    </div>
   );
 };
