@@ -34,7 +34,7 @@ export const VideoReactions = ({
     },
     onSuccess: () => {
       utils.videos.getOne.invalidate({ id: videoId });
-      // TODO: invalidate "liked" playlist
+      utils.playlists.getLiked.invalidate();
     },
   });
   const dislike = trpc.videoReactions.dislike.useMutation({
@@ -46,7 +46,7 @@ export const VideoReactions = ({
     },
     onSuccess: () => {
       utils.videos.getOne.invalidate({ id: videoId });
-      // TODO: invalidate "liked" playlist
+      utils.playlists.getLiked.invalidate();
     },
   });
 
