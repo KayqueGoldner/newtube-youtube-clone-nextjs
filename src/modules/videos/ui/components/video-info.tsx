@@ -48,7 +48,7 @@ export const VideoInfo = ({ data, onRemove }: VideoInfoProps) => {
           </h3>
         </Link>
 
-        <Link href={`/videos/${data.id}`}>
+        <Link href={`/users/${data.user.id}`}>
           <UserInfo name={data.user.name} />
         </Link>
 
